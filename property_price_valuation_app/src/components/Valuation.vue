@@ -6,8 +6,9 @@
             ref="address"
             id="map"
             classname="form-control"
-            placeholder="Please type your address"
+            placeholder="Please type your street address"
             v-on:placechanged="getAddressData"
+            types=""
             country="hk"
         >
         </vue-google-autocomplete>
@@ -74,7 +75,7 @@ export default {
         }
       )
       console.log(res)
-      alert(res.data.prediction)
+      alert(`實用呎價${res.data.prediction}`)
     }
   },
  
