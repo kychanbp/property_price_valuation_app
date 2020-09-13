@@ -23,6 +23,9 @@
         </p>
       </form>
     </div>
+    <div>
+        實用呎價 {{valuation}}
+    </div>
   </div>
 </template>
 
@@ -39,7 +42,8 @@ export default {
       address:'',
       placeData:{},
       id:'',
-      age:0
+      age:0,
+      valuation:0
     }
   },
   mounted() {
@@ -75,7 +79,7 @@ export default {
         }
       )
       console.log(res)
-      alert(`實用呎價${res.data.prediction}`)
+      this.valuation = res.data.prediction
     }
   },
  

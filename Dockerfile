@@ -1,8 +1,8 @@
 FROM node:latest as build-stage
 WORKDIR /property_price_valuation_app
-COPY package*.json ./
+COPY /property_price_valuation_app/package*.json ./
 RUN npm install
-COPY ./ .
+COPY property_price_valuation_app .
 RUN npm run build
 
 FROM nginx as production-stage
