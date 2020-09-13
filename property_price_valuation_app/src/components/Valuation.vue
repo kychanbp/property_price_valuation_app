@@ -1,15 +1,21 @@
 <template>
   <div>
     <h1>Valuate Your Property Now</h1>
-    <div>
+      <label>Address</label> 
+      <vue-google-autocomplete
+            ref="address"
+            id="map"
+            classname="form-control"
+            placeholder="Please type your address"
+            v-on:placechanged="getAddressData"
+            country="hk"
+        >
+        </vue-google-autocomplete>
+      <div>
       <form class="valuation-form" @submit.prevent="onSubmit">
         <p>
-        <label>Address</label> 
-        <input id="address" v-model="address" placeholder="address">
-        </p>
-        <p>
         <label>Building Age</label>
-        <input id="BuildingAge" v-model="BuildingAge" placeholder="BuildingAge">
+        <input id="age" v-model="age" placeholder="BuildingAge">
         </p>
         <p>
          <input type="submit" value="submit">
@@ -21,27 +27,54 @@
 
 <script>
 import axios from "axios";
-const baseUrl = 'http://propertypricemodel-env.eba-fspp4avq.ap-southeast-1.elasticbeanstalk.com/predict'
+import VueGoogleAutocomplete from 'vue-google-autocomplete';
+const baseUrl = 'http://PropertyPriceModel-env.eba-fspp4avq.ap-southeast-1.elasticbeanstalk.com/predict'
 
 export default {
+  components:{VueGoogleAutocomplete},
   name: "Valuation",
+  data: function (){
+    return {
+      address:'',
+      placeData:{},
+      id:'',
+      age:0
+    }
+  },
+  mounted() {
+    // To demonstrate functionality of exposed component functions
+    // Here we make focus on the user input
+    this.$refs.address.focus();
+  },
   methods: {
+    /**
+    * When the location found
+    * @param {Object} addressData Data of the found location
+    * @param {Object} placeResultData PlaceResult object
+    * @param {String} id Input container ID
+    */
+    getAddressData: function (addressData, placeResultData, id) {
+        this.address = addressData;
+        this.placeData = placeResultData;
+        this.id = id;
+      },
+
     async onSubmit(){
       console.log({address: this.address, age: this.age})
       const res = await axios.post(baseUrl, 
         {
-          HMA_lat: 22.33012,
-          HMA_Lng: 114.1641913,
-          blg_age: 19
+          "HMA_lat": this.address.latitude,
+          "HMA_Lng": this.address.longitude,
+          "blg_age": this.age
         },
         {
           headers:{
-            'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
           }
         }
       )
-      alert(res.data)
+      console.log(res)
+      alert(res.data.prediction)
     }
   },
  
